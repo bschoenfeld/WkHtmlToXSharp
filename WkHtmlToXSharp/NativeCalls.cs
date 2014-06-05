@@ -65,8 +65,8 @@ namespace WkHtmlToXSharp
 		}
 		#endregion
 
-		#region WkHtmlToPdf P/Invokes
-		[DllImport(DLL_NAME)]
+        #region WkHtmlToPdf P/Invokes
+        [DllImport(DLL_NAME)]
 		public static extern IntPtr wkhtmltopdf_version();
 
 		[DllImport(DLL_NAME)]
@@ -171,5 +171,95 @@ namespace WkHtmlToXSharp
 			return Marshal.PtrToStringAnsi(ptr);
 		}
 		#endregion
+
+        #region WkHtmlToImage P/Invokes
+        [DllImport(DLL_NAME)]
+        public static extern IntPtr wkhtmltoimage_version();
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_init(int use_graphics);
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_deinit();
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_extended_qt();
+
+        [DllImport(DLL_NAME)]
+        public static extern IntPtr wkhtmltoimage_create_global_settings();
+
+        [DllImport(DLL_NAME)]
+        public static extern IntPtr wkhtmltoimage_create_converter(IntPtr globalSettings,
+            [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(Marshaler))] string data);
+
+#if true
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_set_global_setting(IntPtr globalSettings,
+            [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(Marshaler))] string name,
+            [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(Marshaler))] string value);
+#else
+		[DllImport(DLL_NAME)]
+		public static extern int wkhtmltoimage_set_global_setting(IntPtr globalSettings, string name, IntPtr value);
+#endif
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_convert(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        public static extern IntPtr wkhtmltoimage_get_output(IntPtr converter, out IntPtr data);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_destroy_converter(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_current_phase(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_phase_count(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        // NOTE: Using IntPtr as return to avoid runtime from freeing returned string. (pruiz)
+        public static extern IntPtr wkhtmltoimage_phase_description(IntPtr converter, int phase);
+
+        [DllImport(DLL_NAME)]
+        // NOTE: Using IntPtr as return to avoid runtime from freeing returned string. (pruiz)
+        public static extern IntPtr wkhtmltoimage_progress_string(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        public static extern int wkhtmltoimage_http_error_code(IntPtr converter);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void wkhtmltoimage_str_callback(IntPtr converter, [MarshalAs(UnmanagedType.LPStr)] string str);
+        //public delegate void wkhtmltoimage_str_callback(IntPtr converter, IntPtr str);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void wkhtmltoimage_int_callback(IntPtr converter, int val);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void wkhtmltoimage_bool_callback(IntPtr converter, bool val);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void wkhtmltoimage_void_callback(IntPtr converter);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_set_error_callback(IntPtr converter, [MarshalAs(UnmanagedType.FunctionPtr)] wkhtmltoimage_str_callback cb);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_set_warning_callback(IntPtr converter, [MarshalAs(UnmanagedType.FunctionPtr)] wkhtmltoimage_str_callback cb);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_set_phase_changed_callback(IntPtr converter, [MarshalAs(UnmanagedType.FunctionPtr)] wkhtmltoimage_void_callback cb);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_set_progress_changed_callback(IntPtr converter, [MarshalAs(UnmanagedType.FunctionPtr)] wkhtmltoimage_int_callback cb);
+
+        [DllImport(DLL_NAME)]
+        public static extern void wkhtmltoimage_set_finished_callback(IntPtr converter, [MarshalAs(UnmanagedType.FunctionPtr)] wkhtmltoimage_bool_callback cb);
+        #endregion
+
+        #region WkHtmlToPdf Call Wrappers
+        public static string WkHtmlToImageVersion()
+        {
+            var ptr = wkhtmltoimage_version();
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+        #endregion
 	}
 }

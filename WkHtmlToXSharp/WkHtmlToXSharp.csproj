@@ -113,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterException.cs" />
+    <Compile Include="IHtmlToImageConverter.cs" />
+    <Compile Include="ImageGlobalSettings.cs" />
+    <Compile Include="WkHtmlToImageConverter.cs" />
     <Compile Include="IHtmlToPdfConverter.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="DelegateQueue\AsyncResult.cs" />
